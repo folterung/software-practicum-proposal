@@ -1,0 +1,2202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Software Practicum — A Proposal for Software Engineering Education</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f1ead9;
+      --paper-warm: #e9e1cd;
+      --paper-deep: #ddd3b9;
+      --ink: #1a1513;
+      --ink-soft: #3d332d;
+      --ink-mute: #6b5f54;
+      --rule: #2a221d;
+      --oxblood: #a32c1e;
+      --oxblood-deep: #7a1f14;
+      --sage: #4d6a4a;
+      --rust: #b8682a;
+      --slate: #2d3c4a;
+      --violet: #5a4a7a;
+      --sun: #d4a63a;
+      --paper-shadow: rgba(26, 21, 19, 0.08);
+      --max: 1260px;
+      --max-text: 680px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.55;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(163, 44, 30, 0.04), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 100% 80%, rgba(77, 106, 74, 0.05), transparent 60%),
+        var(--paper);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+    }
+
+    /* Subtle paper grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.35;
+      background-image:
+        radial-gradient(circle at 25% 30%, rgba(26, 21, 19, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 75% 70%, rgba(26, 21, 19, 0.02) 1px, transparent 1px);
+      background-size: 3px 3px, 5px 5px;
+      mix-blend-mode: multiply;
+    }
+
+    main, header, footer, nav { position: relative; z-index: 2; }
+
+    a { color: inherit; text-decoration: none; }
+
+    ::selection { background: var(--oxblood); color: var(--paper); }
+
+    .container {
+      width: min(calc(100% - 48px), var(--max));
+      margin: 0 auto;
+    }
+
+    .narrow {
+      width: min(calc(100% - 48px), var(--max-text));
+      margin: 0 auto;
+    }
+
+    /* ——— MASTHEAD ——— */
+
+    .masthead {
+      border-bottom: 1px solid var(--rule);
+      padding: 14px 0 12px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--paper);
+    }
+
+    .masthead-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .masthead-row .dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: var(--oxblood);
+      margin: 0 10px 2px;
+      vertical-align: middle;
+    }
+
+    /* ——— TITLE BLOCK ——— */
+
+    .title-block {
+      padding: 56px 0 32px;
+      border-bottom: 2px solid var(--rule);
+      position: relative;
+    }
+
+    .title-block::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      bottom: -8px;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .volume-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(42, 34, 29, 0.25);
+    }
+
+    .volume-line span.accent {
+      color: var(--oxblood);
+      font-weight: 700;
+    }
+
+    .masthead-title {
+      font-family: "Fraunces", "Playfair Display", Georgia, serif;
+      font-optical-sizing: auto;
+      font-variation-settings: "SOFT" 30, "opsz" 144;
+      font-weight: 400;
+      font-size: clamp(3.2rem, 8.5vw, 8.2rem);
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .masthead-title em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--oxblood);
+      font-variation-settings: "SOFT" 100, "opsz" 144;
+    }
+
+    .masthead-sub {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 32px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .masthead-sub-left {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      max-width: 360px;
+    }
+
+    .masthead-sub-left strong {
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .masthead-sub-right {
+      text-align: right;
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--ink-soft);
+      max-width: 420px;
+      font-variation-settings: "SOFT" 60;
+    }
+
+    /* ——— STANDFIRST ——— */
+
+    .standfirst {
+      padding: 52px 0 48px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .standfirst-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr 220px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .standfirst-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      padding-top: 10px;
+      line-height: 1.7;
+    }
+
+    .standfirst-label strong {
+      display: block;
+      color: var(--oxblood);
+      margin-bottom: 6px;
+    }
+
+    .standfirst-body {
+      font-family: "Source Serif 4", serif;
+      font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+      line-height: 1.35;
+      color: var(--ink);
+      font-weight: 380;
+    }
+
+    .standfirst-body .drop {
+      float: left;
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 20;
+      font-weight: 600;
+      font-size: 5.2em;
+      line-height: 0.85;
+      padding: 0.06em 0.12em 0 0;
+      margin-top: 0.02em;
+      color: var(--oxblood);
+    }
+
+    .toc {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11.5px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 14px 0;
+    }
+
+    .toc-title {
+      color: var(--oxblood);
+      margin-bottom: 10px;
+      letter-spacing: 0.12em;
+    }
+
+    .toc ol {
+      list-style: none;
+      padding: 0; margin: 0;
+      display: grid;
+      gap: 7px;
+    }
+
+    .toc ol li {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      border-bottom: 1px dotted rgba(42, 34, 29, 0.35);
+      padding-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .toc ol li a { color: var(--ink); transition: color 0.15s; }
+    .toc ol li a:hover { color: var(--oxblood); }
+
+    .toc ol li span:first-child::before {
+      content: attr(data-num) " ";
+      color: var(--oxblood);
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    /* ——— SECTIONS ——— */
+
+    .section {
+      padding: 76px 0 24px;
+      position: relative;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-bottom: 40px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-marker {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      padding-top: 16px;
+      line-height: 1.8;
+    }
+
+    .section-marker .num {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 30;
+      font-size: 3.2rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--oxblood);
+      display: block;
+      line-height: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .section-head h2 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 40, "opsz" 110;
+      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1;
+      letter-spacing: -0.022em;
+      margin: 0 0 18px;
+      color: var(--ink);
+      max-width: 22ch;
+    }
+
+    .section-head h2 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--oxblood);
+      font-variation-settings: "SOFT" 100;
+    }
+
+    .section-head p {
+      font-family: "Source Serif 4", serif;
+      font-size: 1.1rem;
+      color: var(--ink-soft);
+      max-width: 60ch;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .section-body {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .section-body .margin-note {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      line-height: 1.8;
+      padding-top: 8px;
+    }
+
+    .section-body .margin-note strong {
+      display: block;
+      color: var(--oxblood);
+      margin-bottom: 6px;
+      letter-spacing: 0.1em;
+    }
+
+    .section-content > * + * { margin-top: 22px; }
+
+    .section-content p {
+      margin: 0 0 18px;
+      max-width: var(--max-text);
+      font-size: 1.08rem;
+      line-height: 1.62;
+      color: var(--ink);
+    }
+
+    /* ——— COMPARE BLOCKS ——— */
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 40px;
+      margin: 36px 0;
+      padding: 32px 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .compare .divider {
+      background: var(--rule);
+      width: 1px;
+    }
+
+    .compare h4 {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin: 0 0 16px;
+    }
+
+    .compare .typical h4 { color: var(--rust); }
+    .compare .living h4 { color: var(--sage); }
+
+    .compare h3 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 40;
+      font-weight: 500;
+      font-style: italic;
+      font-size: 1.6rem;
+      line-height: 1.2;
+      margin: 0 0 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .compare ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .compare li {
+      position: relative;
+      padding: 9px 0 9px 22px;
+      border-bottom: 1px dotted rgba(42, 34, 29, 0.3);
+      font-size: 1rem;
+      line-height: 1.4;
+      color: var(--ink-soft);
+    }
+
+    .compare .typical li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--rust);
+      font-weight: 700;
+    }
+
+    .compare .living li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--sage);
+      font-weight: 700;
+    }
+
+    /* ——— DUAL PHASE CARDS ——— */
+
+    .phases {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 28px;
+    }
+
+    .phase {
+      border: 1px solid var(--rule);
+      background: var(--paper-warm);
+      padding: 32px;
+      position: relative;
+    }
+
+    .phase::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: -1px; right: -1px;
+      height: 6px;
+      background: var(--ink);
+    }
+
+    .phase.ai::before { background: var(--oxblood); }
+
+    .phase-meta {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 10px;
+    }
+
+    .phase h3 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 30, "opsz" 80;
+      font-weight: 450;
+      font-size: 1.9rem;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      margin: 0 0 14px;
+    }
+
+    .phase p {
+      font-size: 1rem;
+      color: var(--ink-soft);
+      margin: 0 0 16px;
+      line-height: 1.55;
+    }
+
+    .phase ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .phase ul li {
+      position: relative;
+      padding: 6px 0 6px 26px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      border-top: 1px dotted rgba(42, 34, 29, 0.28);
+    }
+
+    .phase ul li:first-child { border-top: 1px solid var(--rule); }
+
+    .phase ul li::before {
+      content: "▸";
+      position: absolute;
+      left: 6px;
+      color: var(--oxblood);
+    }
+
+    /* ——— BLUEPRINT SCHEMATIC ——— */
+
+    .schematic-wrap {
+      margin: 48px 0 20px;
+      padding: 0;
+      position: relative;
+    }
+
+    .schematic-frame {
+      background: var(--paper-warm);
+      border: 1px solid var(--rule);
+      padding: 28px 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Blueprint grid background */
+    .schematic-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(26, 21, 19, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26, 21, 19, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .schematic-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px dashed var(--rule);
+      position: relative;
+      z-index: 2;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .schematic-header-left {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .schematic-header-left .fig {
+      color: var(--oxblood);
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    .schematic-header-left h3 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 20;
+      font-weight: 500;
+      font-size: 1.55rem;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      line-height: 1.05;
+      margin: 8px 0 4px;
+      text-transform: none;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-soft);
+    }
+
+    .legend i {
+      width: 14px; height: 14px;
+      display: inline-block;
+      border: 1px solid var(--rule);
+    }
+
+    .legend .li-student { background: rgba(90, 74, 122, 0.2); border-color: var(--violet); }
+    .legend .li-gate { background: rgba(184, 104, 42, 0.25); border-color: var(--rust); }
+    .legend .li-prod { background: rgba(77, 106, 74, 0.2); border-color: var(--sage); }
+    .legend .li-flow i {
+      background: none;
+      border: none;
+      width: 22px;
+      height: 2px;
+      border-top: 2px dashed var(--oxblood);
+    }
+
+    .schematic-svg {
+      width: 100%;
+      display: block;
+      position: relative;
+      z-index: 2;
+    }
+
+    .schematic-footer {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--rule);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ——— GUARDRAILS GRID ——— */
+
+    .guardrails {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 36px 0;
+    }
+
+    .guardrail {
+      background: var(--paper-warm);
+      padding: 28px 26px;
+      position: relative;
+    }
+
+    .guardrail-num {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      color: var(--oxblood);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .guardrail h3 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 30;
+      font-weight: 500;
+      font-size: 1.35rem;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin: 0 0 12px;
+      color: var(--ink);
+    }
+
+    .guardrail p {
+      margin: 0;
+      font-size: 0.96rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .guardrail-icon {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      width: 24px;
+      height: 24px;
+      opacity: 0.5;
+    }
+
+    /* ——— TRUST LADDER ——— */
+
+    .ladder {
+      margin: 40px 0;
+      border: 1px solid var(--rule);
+      background: var(--paper-warm);
+      padding: 36px 32px 28px;
+      position: relative;
+    }
+
+    .ladder-title {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .ladder-title .fig-label { color: var(--oxblood); font-weight: 700; }
+
+    .ladder-rungs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .rung {
+      padding: 20px 20px 20px 0;
+      position: relative;
+    }
+
+    .rung:last-child { padding-right: 0; }
+
+    .rung::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--oxblood) 0%, var(--oxblood) 100%);
+      opacity: calc(0.2 + var(--fill) * 0.7);
+      transform-origin: left;
+      transform: scaleX(var(--fill));
+    }
+
+    .rung::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: rgba(42, 34, 29, 0.15);
+      z-index: -1;
+    }
+
+    .rung-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin: 24px 0 6px;
+    }
+
+    .rung h4 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 20;
+      font-weight: 500;
+      font-size: 1.1rem;
+      line-height: 1.15;
+      margin: 0 0 8px;
+      letter-spacing: -0.005em;
+    }
+
+    .rung p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+
+    /* ——— PULL QUOTE ——— */
+
+    .pullquote {
+      margin: 60px 0;
+      padding: 0;
+      max-width: 900px;
+      position: relative;
+    }
+
+    .pullquote::before {
+      content: "";
+      display: block;
+      width: 64px;
+      height: 2px;
+      background: var(--oxblood);
+      margin-bottom: 24px;
+    }
+
+    .pullquote blockquote {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 100, "opsz" 144;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .pullquote blockquote .highlight {
+      font-style: normal;
+      font-weight: 450;
+      background: linear-gradient(180deg, transparent 62%, rgba(163, 44, 30, 0.22) 62%);
+      padding: 0 2px;
+    }
+
+    .pullquote cite {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      font-style: normal;
+      display: block;
+      margin-top: 22px;
+    }
+
+    /* ——— INTERLUDE / CULTURE SHOCK LEDGER ——— */
+
+    .interlude {
+      padding: 40px 0 24px;
+      position: relative;
+    }
+
+    .interlude .section-marker .tag {
+      display: inline-block;
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 80;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.4rem;
+      color: var(--oxblood);
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+      padding: 2px 10px 4px;
+      border: 1px solid var(--oxblood);
+      border-radius: 2px;
+      line-height: 1;
+    }
+
+    .ledger {
+      margin: 40px 0 20px;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 4px 0;
+      background: var(--paper-warm);
+      position: relative;
+    }
+
+    .ledger-header {
+      display: grid;
+      grid-template-columns: 1fr 56px 1fr;
+      align-items: end;
+      gap: 0;
+      padding: 18px 28px 12px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .ledger-header .col-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      line-height: 1.5;
+    }
+
+    .ledger-header .col-label strong {
+      display: block;
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 40;
+      font-weight: 500;
+      font-style: italic;
+      font-size: 1.25rem;
+      text-transform: none;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .ledger-header .col-left { text-align: left; }
+    .ledger-header .col-left strong { color: var(--rust); }
+    .ledger-header .col-right strong { color: var(--sage); }
+
+    .ledger-header .col-spine {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--ink-mute);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: stretch;
+      padding: 4px 0;
+    }
+
+    .ledger-rows {
+      display: grid;
+      grid-template-columns: 1fr 56px 1fr;
+      gap: 0;
+    }
+
+    .ledger-row {
+      display: contents;
+    }
+
+    .ledger-row .cell {
+      padding: 16px 28px;
+      border-top: 1px dotted rgba(42, 34, 29, 0.35);
+      font-family: "Source Serif 4", serif;
+      font-size: 0.96rem;
+      color: var(--ink);
+      line-height: 1.45;
+      position: relative;
+    }
+
+    .ledger-row .cell:first-child {
+      text-align: right;
+    }
+
+    .ledger-row .cell .when {
+      display: block;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .ledger-row .cell.typical .when { color: var(--rust); }
+    .ledger-row .cell.living .when { color: var(--sage); }
+
+    .ledger-row .cell.typical {
+      color: var(--ink-mute);
+    }
+
+    .ledger-row .spine {
+      border-top: 1px dotted rgba(42, 34, 29, 0.35);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ledger-row .spine::before {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: var(--rule);
+      transform: translateX(-0.5px);
+    }
+
+    .ledger-row .spine .marker {
+      position: relative;
+      z-index: 2;
+      background: var(--paper-warm);
+      padding: 4px 6px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.08em;
+      color: var(--oxblood);
+      font-weight: 700;
+    }
+
+    .ledger-footer {
+      padding: 16px 28px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--rule);
+    }
+
+    .ledger-footer .fig-label {
+      color: var(--oxblood);
+      font-weight: 700;
+    }
+
+    @media (max-width: 1020px) {
+      .ledger-header,
+      .ledger-rows {
+        grid-template-columns: 1fr;
+      }
+      .ledger-header .col-spine { display: none; }
+      .ledger-header .col-left { text-align: left; }
+      .ledger-row .cell:first-child { text-align: left; }
+      .ledger-row .cell.typical {
+        background: rgba(184, 104, 42, 0.05);
+      }
+      .ledger-row .cell.living {
+        background: rgba(77, 106, 74, 0.05);
+      }
+      .ledger-row .spine { display: none; }
+    }
+
+    /* ——— PILOT ——— */
+
+    .pilot-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 32px 0;
+    }
+
+    .pilot-step {
+      background: var(--paper-warm);
+      padding: 28px 22px 26px;
+      position: relative;
+    }
+
+    .pilot-step-num {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 30;
+      font-style: italic;
+      font-size: 4rem;
+      font-weight: 300;
+      line-height: 0.85;
+      color: var(--oxblood);
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .pilot-step h3 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 30;
+      font-weight: 500;
+      font-size: 1.2rem;
+      line-height: 1.15;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .pilot-step p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .pilot-step::after {
+      content: "→";
+      position: absolute;
+      top: 38px;
+      right: -12px;
+      width: 24px;
+      height: 24px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--oxblood);
+      z-index: 3;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+    }
+
+    .pilot-step:last-child::after { display: none; }
+
+    /* ——— DISCUSSION ——— */
+
+    .discussion {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      margin: 32px 0;
+    }
+
+    .discussion-block {
+      padding: 24px 0;
+      border-top: 2px solid var(--ink);
+    }
+
+    .discussion-block h3 {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--oxblood);
+      font-weight: 700;
+      margin: 0 0 18px;
+    }
+
+    .discussion-block ol {
+      list-style: none;
+      padding: 0; margin: 0;
+      counter-reset: disc;
+    }
+
+    .discussion-block li {
+      counter-increment: disc;
+      position: relative;
+      padding: 14px 0 14px 40px;
+      border-bottom: 1px solid rgba(42, 34, 29, 0.2);
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 20;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .discussion-block li:last-child { border-bottom: none; }
+
+    .discussion-block li::before {
+      content: counter(disc, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 16px;
+      font-family: "JetBrains Mono", monospace;
+      font-style: normal;
+      font-size: 11px;
+      color: var(--oxblood);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    /* ——— COLOPHON ——— */
+
+    .colophon {
+      margin-top: 80px;
+      padding: 60px 0 80px;
+      border-top: 2px solid var(--rule);
+      background: var(--paper-warm);
+      position: relative;
+    }
+
+    .colophon::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .colophon-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .colophon h2 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "SOFT" 40, "opsz" 110;
+      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.025em;
+      margin: 0 0 22px;
+    }
+
+    .colophon h2 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--oxblood);
+    }
+
+    .colophon p {
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      max-width: 50ch;
+    }
+
+    .colophon-meta {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      line-height: 1.9;
+    }
+
+    .colophon-meta strong {
+      color: var(--oxblood);
+      display: block;
+      margin-bottom: 10px;
+      letter-spacing: 0.12em;
+    }
+
+    .colophon-meta dl {
+      margin: 0 0 22px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 6px 16px;
+    }
+
+    .colophon-meta dt { color: var(--ink-mute); }
+    .colophon-meta dd { margin: 0; color: var(--ink); }
+
+    .end-mark {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--oxblood);
+      margin-left: 6px;
+      vertical-align: baseline;
+      transform: translateY(-2px);
+    }
+
+    /* ——— RESPONSIVE ——— */
+
+    @media (max-width: 1020px) {
+      .section-head, .section-body, .standfirst-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .standfirst-label, .section-marker, .margin-note { padding-top: 0; }
+      .phases, .discussion, .compare, .colophon-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .compare .divider { display: none; }
+      .guardrails { grid-template-columns: 1fr 1fr; }
+      .pilot-grid { grid-template-columns: 1fr 1fr; }
+      .ladder-rungs { grid-template-columns: 1fr 1fr; }
+      .rung { border-right: none; border-bottom: 1px dashed var(--rule); padding-bottom: 28px; }
+      .rung:last-child, .rung:nth-child(2) { border-bottom: 0; }
+      .pilot-step::after { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      body { font-size: 16.5px; }
+      .guardrails, .pilot-grid { grid-template-columns: 1fr; }
+      .ladder-rungs { grid-template-columns: 1fr; }
+      .rung { border-bottom: 1px dashed var(--rule) !important; }
+      .rung:last-child { border-bottom: 0 !important; }
+      .title-block { padding: 36px 0 24px; }
+      .section { padding: 48px 0 16px; }
+      .phases { grid-template-columns: 1fr; }
+      .schematic-frame { padding: 18px; }
+    }
+
+    @media print {
+      body { background: white; color: black; }
+      .masthead, .toc { break-inside: avoid; }
+      .section { page-break-inside: avoid; padding: 24px 0; }
+      body::before { display: none; }
+    }
+
+    /* ——— ENTRANCE ANIMATION ——— */
+
+    @keyframes fadeRise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .title-block > *,
+    .standfirst > *,
+    .toc {
+      animation: fadeRise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    }
+
+    .title-block .volume-line { animation-delay: 0.05s; }
+    .masthead-title { animation-delay: 0.15s; }
+    .masthead-sub { animation-delay: 0.35s; }
+    .standfirst-label { animation-delay: 0.45s; }
+    .standfirst-body { animation-delay: 0.55s; }
+    .standfirst-right { animation-delay: 0.65s; }
+    .toc { animation-delay: 0.75s; }
+
+  </style>
+</head>
+<body>
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="container masthead-row">
+      <div>The Software Practicum Review<span class="dot"></span>A Working Paper on Software Engineering Education</div>
+      <div>Vol. I · Spring MMXXVI</div>
+    </div>
+  </div>
+
+  <!-- TITLE BLOCK -->
+  <header class="title-block">
+    <div class="container">
+      <div class="volume-line">
+        <span>Proposal &nbsp;/&nbsp; Draft for Discussion</span>
+        <span>Filed under: <span class="accent">Pedagogy · Safety · Infrastructure</span></span>
+        <span>Twelve minutes</span>
+      </div>
+
+      <h1 class="masthead-title">
+        A Practicum for<br>
+        <em>software&nbsp;engineering</em><br>
+        education.
+      </h1>
+
+      <div class="masthead-sub">
+        <div class="masthead-sub-left">
+          <strong>The Argument</strong>
+          Students can do real engineering work inside real institutional systems — protected from harm by the same process that already governs junior professionals.
+        </div>
+        <div class="masthead-sub-right">
+          &ldquo;Education should not simulate reality when it can responsibly expose students to it.&rdquo;
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STANDFIRST & TOC -->
+  <section class="standfirst">
+    <div class="container standfirst-grid">
+      <div class="standfirst-label">
+        <strong>§ 00</strong>
+        Abstract<br>
+        Prepared for<br>
+        institutional review
+      </div>
+
+      <div class="standfirst-body">
+        <p>
+          <span class="drop">T</span>raditional software education asks students to learn <em>near</em> software — in simulations, isolated assignments, and short-lived projects — and then expects them to graduate with working engineering experience. This proposal describes a different model: a <strong>Software Practicum</strong> where students contribute to a real codebase the institution depends on, while a gated pipeline — modeled on enterprise practice — ensures that nothing reaches production without professional review.
+        </p>
+      </div>
+
+      <div class="toc standfirst-right">
+        <div class="toc-title">Contents</div>
+        <ol>
+          <li><span data-num="I">The Premise</span><span>p. 01</span></li>
+          <li><span data-num="II">The Model</span><span>p. 02</span></li>
+          <li><span data-num="III">The Schematic</span><span>p. 03</span></li>
+          <li><span data-num="IV">Guardrails</span><span>p. 04</span></li>
+          <li><span data-num="V">Incremental Trust</span><span>p. 05</span></li>
+          <li><span data-num="VI">Pilot Design</span><span>p. 06</span></li>
+          <li><span data-num="VII">Open Questions</span><span>p. 07</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- I — PREMISE -->
+    <section class="section" id="premise">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">I</span>
+            Section One<br>
+            Premise
+          </div>
+          <div>
+            <h2>Experience is expected &mdash;<br>but rarely <em>built in</em>.</h2>
+            <p>
+              Employers ask graduates for practical depth. Schools respond with curricula full of assignments, theory, and isolated projects. The environments where engineering actually forms — long-lived systems with users, history, and consequences — are almost never where students are allowed to stand.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Margin</strong>
+            The gap this<br>
+            proposal tries<br>
+            to close
+          </div>
+          <div class="section-content">
+            <div class="compare">
+              <div class="typical">
+                <h4>Typical college model</h4>
+                <h3>Students learn <em>near</em> software, not inside it</h3>
+                <ul>
+                  <li>Assignments are isolated and short-lived</li>
+                  <li>Projects are graded, then abandoned</li>
+                  <li>Little exposure to systems with real history</li>
+                  <li>Feedback ends at a letter grade</li>
+                  <li>No path from student work to institutional value</li>
+                </ul>
+              </div>
+              <div class="divider"></div>
+              <div class="living">
+                <h4>Software Practicum model</h4>
+                <h3>Students contribute inside <em>controlled reality</em></h3>
+                <ul>
+                  <li>Work happens in a real platform with continuity</li>
+                  <li>Changes move through protected environments</li>
+                  <li>Professional engineers control final integration</li>
+                  <li>Students receive authentic review and iteration</li>
+                  <li>Successful work flows into the systems students use</li>
+                </ul>
+              </div>
+            </div>
+
+            <p>
+              The fear that students will &ldquo;break things&rdquo; almost always imagines direct, unmanaged access. That is not what is being proposed here. Every pattern in this document has an older sibling in enterprise engineering: juniors are not kept out of important systems — they are surrounded by process that makes their growth safe.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- II — MODEL -->
+    <section class="section" id="model">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">II</span>
+            Section Two<br>
+            The Model
+          </div>
+          <div>
+            <h2>A semester in<br><em>two phases</em>.</h2>
+            <p>
+              The Software Practicum divides instructional time between unassisted reasoning and deliberate AI augmentation. One phase builds mental models; the other builds judgment about tools. Both happen inside the same evolving codebase.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Cadence</strong>
+            Phase I: weeks 1&ndash;7<br>
+            Phase II: weeks 8&ndash;15<br>
+            Same codebase<br>
+            Same system<br>
+            Different tools
+          </div>
+          <div class="section-content">
+            <div class="phases">
+              <article class="phase">
+                <div class="phase-meta">Phase I · Manual Reasoning</div>
+                <h3>Hands-on code, no assistants.</h3>
+                <p>
+                  The purpose is not to slow students down. It is to force the formation of deep mental models by removing the temptation to delegate reading, tracing, and debugging to an AI that may be wrong in ways the student cannot detect.
+                </p>
+                <ul>
+                  <li>Reading unfamiliar codebases</li>
+                  <li>Tracing program flow &amp; dependencies</li>
+                  <li>Debugging without automated suggestions</li>
+                  <li>Explaining behavior &amp; failure modes</li>
+                  <li>Building precision and patience</li>
+                </ul>
+              </article>
+
+              <article class="phase ai">
+                <div class="phase-meta">Phase II · AI-Assisted Engineering</div>
+                <h3>Same system, new tools, new discipline.</h3>
+                <p>
+                  Once students can read and reason about code directly, they are introduced to AI assistants inside the same environment. The goal is judgment: knowing when AI helps, when it misleads, and how to verify what it produces before a human reviewer sees it.
+                </p>
+                <ul>
+                  <li>Evaluating AI-generated changes</li>
+                  <li>Comparing manual vs. assisted reasoning</li>
+                  <li>Mapping where AI fails and why</li>
+                  <li>Strengthening verification habits</li>
+                  <li>Treating AI as a tool, not a source of truth</li>
+                </ul>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- III — SCHEMATIC -->
+    <section class="section" id="schematic">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">III</span>
+            Section Three<br>
+            Schematic
+          </div>
+          <div>
+            <h2>How student work reaches &mdash; or <em>does not reach</em> &mdash; production.</h2>
+            <p>
+              The diagram below is the load-bearing piece of the proposal. It shows the parallel student lane, the controlled gate where professional engineers decide what advances, and the production pipeline that administration and staff depend on every day. Students never bypass the gate. They never touch production directly.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Figure 01</strong>
+            The Safety<br>
+            Architecture<br>
+            of the Software Practicum<br>
+            <br>
+            Read left to right,<br>
+            top to bottom.
+          </div>
+          <div class="section-content">
+
+            <div class="schematic-wrap">
+              <div class="schematic-frame">
+                <div class="schematic-header">
+                  <div class="schematic-header-left">
+                    <span class="fig">Fig. 01</span>ENVIRONMENT TOPOLOGY &middot; REV. A
+                    <h3>Student Contribution Pipeline &mdash; Gated Promotion into Production</h3>
+                  </div>
+                  <div class="legend">
+                    <span><i class="li-student"></i> Student envs.</span>
+                    <span><i class="li-gate"></i> Controlled gate</span>
+                    <span><i class="li-prod"></i> Production envs.</span>
+                    <span class="li-flow"><i></i> Promotion path</span>
+                  </div>
+                </div>
+
+                <svg class="schematic-svg" viewBox="0 0 1240 820" xmlns="http://www.w3.org/2000/svg" aria-label="Student contribution pipeline schematic">
+                  <defs>
+                    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#a32c1e"/>
+                    </marker>
+                    <marker id="arrInk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#2a221d"/>
+                    </marker>
+                    <marker id="arrRust" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#b8682a"/>
+                    </marker>
+                    <marker id="arrSage" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                      <path d="M0,0 L10,5 L0,10 z" fill="#4d6a4a"/>
+                    </marker>
+                    <pattern id="hatch" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)">
+                      <line x1="0" y1="0" x2="0" y2="8" stroke="#b8682a" stroke-width="1" opacity="0.3"/>
+                    </pattern>
+                  </defs>
+
+                  <!-- ======================== LANE BACKGROUNDS ======================== -->
+                  <!-- STUDENT LANE: y 50 → 275 -->
+                  <rect x="0" y="50" width="1240" height="225" fill="rgba(90, 74, 122, 0.07)"/>
+                  <line x1="0" y1="50" x2="1240" y2="50" stroke="#5a4a7a" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.45"/>
+                  <line x1="0" y1="275" x2="1240" y2="275" stroke="#5a4a7a" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.45"/>
+
+                  <!-- GATE STRIP: y 320 → 585 -->
+                  <rect x="0" y="320" width="1240" height="265" fill="rgba(184, 104, 42, 0.06)"/>
+                  <line x1="0" y1="320" x2="1240" y2="320" stroke="#b8682a" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.45"/>
+                  <line x1="0" y1="585" x2="1240" y2="585" stroke="#b8682a" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.45"/>
+
+                  <!-- PRODUCTION LANE: y 625 → 810 -->
+                  <rect x="0" y="625" width="1240" height="185" fill="rgba(77, 106, 74, 0.07)"/>
+                  <line x1="0" y1="625" x2="1240" y2="625" stroke="#4d6a4a" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.45"/>
+
+                  <!-- ======================== LANE LABELS (margin column) ======================== -->
+                  <g font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.3">
+                    <text x="15" y="72" fill="#6b5f54">STUDENT LANE</text>
+                    <text x="15" y="87" fill="#5a4a7a" font-weight="700">SAFE · ISOLATED</text>
+                    <text x="15" y="100" fill="#5a4a7a" font-weight="700">REVERSIBLE</text>
+
+                    <text x="15" y="345" fill="#6b5f54">CONTROLLED</text>
+                    <text x="15" y="358" fill="#6b5f54">GATE</text>
+                    <text x="15" y="376" fill="#b8682a" font-weight="700">HUMAN</text>
+                    <text x="15" y="389" fill="#b8682a" font-weight="700">JUDGMENT</text>
+
+                    <text x="15" y="647" fill="#6b5f54">PRODUCTION</text>
+                    <text x="15" y="660" fill="#6b5f54">LANE</text>
+                    <text x="15" y="678" fill="#4d6a4a" font-weight="700">STAFF &amp;</text>
+                    <text x="15" y="691" fill="#4d6a4a" font-weight="700">ADMIN USE</text>
+                  </g>
+
+                  <!-- ======================== STUDENT LANE BOXES ======================== -->
+                  <g>
+                    <!-- 01 · Student Dev -->
+                    <rect x="150" y="110" width="210" height="130" rx="3" fill="#f1ead9" stroke="#5a4a7a" stroke-width="1.5"/>
+                    <text x="168" y="135" font-family="JetBrains Mono, monospace" font-size="9" fill="#5a4a7a" letter-spacing="1">01 · STUDENT DEV</text>
+                    <text x="168" y="165" font-family="Fraunces, serif" font-size="16" font-weight="500" fill="#1a1513">Fork &amp; Branch</text>
+                    <text x="168" y="193" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">Students work in their</text>
+                    <text x="168" y="208" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">own isolated sandboxes,</text>
+                    <text x="168" y="223" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">disconnected from prod.</text>
+
+                    <!-- 02 · Peer Review -->
+                    <rect x="400" y="110" width="210" height="130" rx="3" fill="#f1ead9" stroke="#5a4a7a" stroke-width="1.5"/>
+                    <text x="418" y="135" font-family="JetBrains Mono, monospace" font-size="9" fill="#5a4a7a" letter-spacing="1">02 · PEER REVIEW</text>
+                    <text x="418" y="165" font-family="Fraunces, serif" font-size="16" font-weight="500" fill="#1a1513">Tests &amp; Critique</text>
+                    <text x="418" y="193" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">Mentor and peer feedback</text>
+                    <text x="418" y="208" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">shape the change before</text>
+                    <text x="418" y="223" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">it advances.</text>
+
+                    <!-- 03 · Student Staging -->
+                    <rect x="650" y="110" width="210" height="130" rx="3" fill="#f1ead9" stroke="#5a4a7a" stroke-width="1.5"/>
+                    <text x="668" y="135" font-family="JetBrains Mono, monospace" font-size="9" fill="#5a4a7a" letter-spacing="1">03 · STUDENT STAGING</text>
+                    <text x="668" y="165" font-family="Fraunces, serif" font-size="16" font-weight="500" fill="#1a1513">Mirror of Reality</text>
+                    <text x="668" y="193" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">Production-like environment</text>
+                    <text x="668" y="208" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">with synthetic data — safe</text>
+                    <text x="668" y="223" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">to test at full fidelity.</text>
+
+                    <!-- Horizontal flow arrows -->
+                    <line x1="365" y1="175" x2="395" y2="175" stroke="#5a4a7a" stroke-width="1.5" marker-end="url(#arr)"/>
+                    <line x1="615" y1="175" x2="645" y2="175" stroke="#5a4a7a" stroke-width="1.5" marker-end="url(#arr)"/>
+                  </g>
+
+                  <!-- ======================== GATE ZONE ======================== -->
+                  <!-- Hatched background for the gate boxes -->
+                  <rect x="280" y="345" width="680" height="220" fill="url(#hatch)" stroke="#b8682a" stroke-width="1" stroke-dasharray="3 3"/>
+                  <text x="620" y="335" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#b8682a" font-weight="700" letter-spacing="1.8">— — —  PROFESSIONAL REVIEW ZONE  — — —</text>
+
+                  <!-- Lock icon (center-top of gate zone) -->
+                  <g transform="translate(620, 380)">
+                    <circle cx="0" cy="0" r="18" fill="#f1ead9" stroke="#b8682a" stroke-width="1.5"/>
+                    <rect x="-7" y="-3" width="14" height="10" rx="1" fill="#b8682a"/>
+                    <path d="M -4.5 -3 L -4.5 -8 Q -4.5 -13 0 -13 Q 4.5 -13 4.5 -8 L 4.5 -3" fill="none" stroke="#b8682a" stroke-width="1.8"/>
+                  </g>
+
+                  <!-- Gate A: Professional Review -->
+                  <g>
+                    <rect x="310" y="420" width="280" height="130" rx="3" fill="#f1ead9" stroke="#b8682a" stroke-width="2"/>
+                    <text x="328" y="445" font-family="JetBrains Mono, monospace" font-size="9" fill="#b8682a" letter-spacing="1" font-weight="700">GATE A · PROFESSIONAL REVIEW</text>
+                    <text x="328" y="475" font-family="Fraunces, serif" font-size="16" font-weight="500" fill="#1a1513">Human Approval</text>
+                    <text x="328" y="503" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">Staff engineers review</text>
+                    <text x="328" y="518" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">architecture, safety, and</text>
+                    <text x="328" y="533" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">maintainability.</text>
+                  </g>
+
+                  <!-- Gate B: Integration Branch -->
+                  <g>
+                    <rect x="650" y="420" width="280" height="130" rx="3" fill="#f1ead9" stroke="#b8682a" stroke-width="2"/>
+                    <text x="668" y="445" font-family="JetBrains Mono, monospace" font-size="9" fill="#b8682a" letter-spacing="1" font-weight="700">GATE B · INTEGRATION BRANCH</text>
+                    <text x="668" y="475" font-family="Fraunces, serif" font-size="16" font-weight="500" fill="#1a1513">Quarantine Branch</text>
+                    <text x="668" y="503" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">Approved work lands here</text>
+                    <text x="668" y="518" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">before touching any real</text>
+                    <text x="668" y="533" font-family="Source Serif 4, serif" font-size="12" fill="#6b5f54">production path.</text>
+                  </g>
+
+                  <!-- Gate A → Gate B (approved) -->
+                  <line x1="595" y1="485" x2="645" y2="485" stroke="#b8682a" stroke-width="2" marker-end="url(#arrRust)"/>
+                  <text x="620" y="477" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#b8682a" letter-spacing="1" font-weight="700">APPROVED</text>
+
+                  <!-- ======================== TRANSITION: STUDENT → GATE ======================== -->
+                  <!-- Promote arrow: Student Staging (bottom) → Gate A (top) -->
+                  <path d="M 755 240 C 755 300, 400 320, 400 418"
+                        stroke="#2a221d" stroke-width="1.5" fill="none" stroke-dasharray="5 3" marker-end="url(#arrInk)"/>
+                  <text x="450" y="295" font-family="JetBrains Mono, monospace" font-size="10" fill="#2a221d" font-weight="700" letter-spacing="1.2">→ PROMOTE VIA PULL REQUEST</text>
+
+                  <!-- Rejection arrow: Gate A (top-left) → Student Dev (bottom) -->
+                  <path d="M 320 440 C 250 420, 230 290, 255 242"
+                        stroke="#a32c1e" stroke-width="1" fill="none" stroke-dasharray="3 3" opacity="0.75" marker-end="url(#arr)"/>
+                  <text x="130" y="320" font-family="JetBrains Mono, monospace" font-size="9" fill="#a32c1e" font-weight="700" letter-spacing="1.2">↩ REJECTED · REVISE &amp; RESUBMIT</text>
+
+                  <!-- ======================== HARD BOUNDARY ======================== -->
+                  <line x1="0" y1="605" x2="1240" y2="605" stroke="#a32c1e" stroke-width="0.6" opacity="0.55"/>
+                  <rect x="340" y="595" width="560" height="18" fill="#f1ead9" stroke="none"/>
+                  <text x="620" y="608" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#a32c1e" font-weight="700" letter-spacing="1.4">— — HARD BOUNDARY · NO DIRECT STUDENT ACCESS BELOW — —</text>
+
+                  <!-- ======================== TRANSITION: GATE → PRODUCTION ======================== -->
+                  <!-- Merge arrow: Gate B (bottom) → Real Dev (top) -->
+                  <path d="M 790 555 C 790 595, 260 605, 200 693"
+                        stroke="#b8682a" stroke-width="2" fill="none" stroke-dasharray="5 3" marker-end="url(#arrRust)"/>
+                  <text x="445" y="633" font-family="JetBrains Mono, monospace" font-size="10" fill="#b8682a" font-weight="700" letter-spacing="1.2">↓ MERGED — ENTERS PRODUCTION PIPELINE</text>
+
+                  <!-- ======================== PRODUCTION LANE BOXES ======================== -->
+                  <g>
+                    <!-- 04 · Real Dev -->
+                    <rect x="120" y="700" width="170" height="95" rx="3" fill="#f1ead9" stroke="#4d6a4a" stroke-width="1.5"/>
+                    <text x="136" y="723" font-family="JetBrains Mono, monospace" font-size="9" fill="#4d6a4a" letter-spacing="1">04 · REAL DEV</text>
+                    <text x="136" y="748" font-family="Fraunces, serif" font-size="14" font-weight="500" fill="#1a1513">Professional</text>
+                    <text x="136" y="768" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">Staff engineers own</text>
+                    <text x="136" y="781" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">the candidate change.</text>
+
+                    <!-- 05 · Real QA -->
+                    <rect x="320" y="700" width="170" height="95" rx="3" fill="#f1ead9" stroke="#4d6a4a" stroke-width="1.5"/>
+                    <text x="336" y="723" font-family="JetBrains Mono, monospace" font-size="9" fill="#4d6a4a" letter-spacing="1">05 · REAL QA</text>
+                    <text x="336" y="748" font-family="Fraunces, serif" font-size="14" font-weight="500" fill="#1a1513">Regression Tests</text>
+                    <text x="336" y="768" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">Full institutional suite</text>
+                    <text x="336" y="781" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">and security scans.</text>
+
+                    <!-- 06 · Real Staging -->
+                    <rect x="520" y="700" width="170" height="95" rx="3" fill="#f1ead9" stroke="#4d6a4a" stroke-width="1.5"/>
+                    <text x="536" y="723" font-family="JetBrains Mono, monospace" font-size="9" fill="#4d6a4a" letter-spacing="1">06 · REAL STAGING</text>
+                    <text x="536" y="748" font-family="Fraunces, serif" font-size="14" font-weight="500" fill="#1a1513">Release Candidate</text>
+                    <text x="536" y="768" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">Evaluated as a serious</text>
+                    <text x="536" y="781" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">release candidate.</text>
+
+                    <!-- 07 · Production -->
+                    <rect x="720" y="700" width="170" height="95" rx="3" fill="#f1ead9" stroke="#4d6a4a" stroke-width="3"/>
+                    <text x="736" y="723" font-family="JetBrains Mono, monospace" font-size="9" fill="#4d6a4a" letter-spacing="1" font-weight="700">07 · PRODUCTION</text>
+                    <text x="736" y="748" font-family="Fraunces, serif" font-size="14" font-weight="600" fill="#1a1513">Admin &amp; Staff Use</text>
+                    <text x="736" y="768" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">Live system — students</text>
+                    <text x="736" y="781" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">have no direct access.</text>
+
+                    <!-- 08 · Feedback (dashed) -->
+                    <rect x="920" y="700" width="170" height="95" rx="3" fill="#f1ead9" stroke="#4d6a4a" stroke-width="1" stroke-dasharray="4 3"/>
+                    <text x="936" y="723" font-family="JetBrains Mono, monospace" font-size="9" fill="#4d6a4a" letter-spacing="1">08 · FEEDBACK</text>
+                    <text x="936" y="748" font-family="Fraunces, serif" font-size="14" font-weight="500" fill="#1a1513">Review Returns</text>
+                    <text x="936" y="768" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">Authentic critique flows</text>
+                    <text x="936" y="781" font-family="Source Serif 4, serif" font-size="11" fill="#6b5f54">back to student authors.</text>
+
+                    <!-- Horizontal prod arrows -->
+                    <line x1="295" y1="747" x2="315" y2="747" stroke="#4d6a4a" stroke-width="1.5" marker-end="url(#arrSage)"/>
+                    <line x1="495" y1="747" x2="515" y2="747" stroke="#4d6a4a" stroke-width="1.5" marker-end="url(#arrSage)"/>
+                    <line x1="695" y1="747" x2="715" y2="747" stroke="#4d6a4a" stroke-width="1.5" marker-end="url(#arrSage)"/>
+                    <line x1="895" y1="747" x2="915" y2="747" stroke="#4d6a4a" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arrSage)"/>
+                  </g>
+
+                </svg>
+
+                <div class="schematic-footer">
+                  <span>Fig. 01 &middot; Scale: Conceptual &middot; Not to Linear Time</span>
+                  <span>Prepared for the Software Practicum pilot proposal</span>
+                </div>
+              </div>
+            </div>
+
+            <p style="margin-top: 32px;">
+              The diagram is drawn to emphasize one fact: between the student lane and the production lane sits a zone no student change crosses on its own. Every promotion is a human decision made by a staff engineer who knows the system, its users, and what is safe to ship. Students can contribute; they cannot deploy.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PULLQUOTE -->
+    <div class="container">
+      <div class="pullquote">
+        <blockquote>
+          The fear that students will break everything usually comes from imagining <span class="highlight">direct, unmanaged access.</span> That is not what this model proposes. It proposes the same operational discipline enterprises already use with their own junior developers.
+        </blockquote>
+        <cite>— On the premise of the safety architecture</cite>
+      </div>
+    </div>
+
+    <!-- INTERLUDE — CULTURE SHOCK DIVIDEND -->
+    <section class="section interlude" id="dividend">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="tag">Interlude</span>
+            Editorial aside<br>
+            on hidden<br>
+            benefits
+          </div>
+          <div>
+            <h2>The first pull request should not wait for <em>the first job</em>.</h2>
+            <p>
+              Most computer science graduates encounter enterprise engineering practice — pull requests, code review, staging environments, gated deploys, rollback discipline — for the first time after they have already been hired. The transition from classroom to codebase is widely reported as jarring, slow, and sometimes career-defining. The Software Practicum&rsquo;s deepest dividend is that it moves this encounter <em>backwards</em>, into the curriculum, where it belongs.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>The Dividend</strong>
+            Professional<br>
+            fluency instead<br>
+            of culture<br>
+            shock
+          </div>
+          <div class="section-content">
+            <p>
+              In years of working with graduating programmers, a consistent pattern appears: students leave school having written code, but not having <em>shipped</em> it. They have never opened a pull request, never had a senior engineer red-line their diff, never watched a change sit in staging while a CI suite ran. These are not peripheral skills. They are the operating model of professional software engineering, and most new hires acquire them painfully, on the clock, in the first months of employment.
+            </p>
+            <p>
+              The Software Practicum inverts the timeline. Because students work inside the same type of pipeline their future employers already use, the skills that normally cause culture shock are simply part of the coursework. The ledger below sketches the shift.
+            </p>
+
+            <div class="ledger" aria-label="Skill acquisition ledger: typical vs. Software Practicum graduate">
+              <div class="ledger-header">
+                <div class="col-label col-left">
+                  The typical trajectory<br>
+                  <strong>First encountered at first job</strong>
+                </div>
+                <div class="col-spine">— PRACTICE —</div>
+                <div class="col-label col-right">
+                  The Software Practicum trajectory<br>
+                  <strong>First encountered in coursework</strong>
+                </div>
+              </div>
+
+              <div class="ledger-rows">
+                <div class="ledger-row">
+                  <div class="cell typical">
+                    Code submitted as an assignment. Graded, then archived.
+                    <span class="when">Semester after semester</span>
+                  </div>
+                  <div class="spine"><span class="marker">PR</span></div>
+                  <div class="cell living">
+                    Changes proposed as pull requests against a real codebase. Review, revision, merge.
+                    <span class="when">By week 4 of Phase I</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="cell typical">
+                    First time a senior engineer marks up a diff. It is bewildering.
+                    <span class="when">Month 1–3 of first job</span>
+                  </div>
+                  <div class="spine"><span class="marker">REVIEW</span></div>
+                  <div class="cell living">
+                    Peer and staff review are routine; students learn how to give and receive critique.
+                    <span class="when">Ongoing, every PR</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="cell typical">
+                    &ldquo;Staging&rdquo; is a vocabulary word, rarely a lived experience.
+                    <span class="when">Figured out on the job</span>
+                  </div>
+                  <div class="spine"><span class="marker">STAGING</span></div>
+                  <div class="cell living">
+                    Student staging is a real mirror environment — students know what it is for and why it matters.
+                    <span class="when">From Pipeline Stage 03</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="cell typical">
+                    First merge conflict resolved under pressure on a live team.
+                    <span class="when">First week on a sprint</span>
+                  </div>
+                  <div class="spine"><span class="marker">GIT</span></div>
+                  <div class="cell living">
+                    Version control hygiene, branching strategy, and conflict resolution practiced in a safe sandbox.
+                    <span class="when">Introduced in Phase I</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="cell typical">
+                    First exposure to CI, tests-as-a-gate, and rollback comes during onboarding.
+                    <span class="when">Weeks 2–6 of first job</span>
+                  </div>
+                  <div class="spine"><span class="marker">CI</span></div>
+                  <div class="cell living">
+                    Every student PR passes through automated checks before reaching Gate A.
+                    <span class="when">Baked into the pipeline</span>
+                  </div>
+                </div>
+
+                <div class="ledger-row">
+                  <div class="cell typical">
+                    First production postmortem witnessed from the sidelines.
+                    <span class="when">Whenever something breaks</span>
+                  </div>
+                  <div class="spine"><span class="marker">OPS</span></div>
+                  <div class="cell living">
+                    Students observe how approved changes move through real QA and staging — including when they fail.
+                    <span class="when">Visible across the term</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ledger-footer">
+                <span><span class="fig-label">Fig. 03</span> &middot; Skill acquisition ledger — typical vs. Software Practicum</span>
+                <span>Read inward: each practice is encountered earlier and more safely</span>
+              </div>
+            </div>
+
+            <p>
+              The subtler gain is <strong>confidence</strong>. A student who has already authored real changes inside a real, gated pipeline carries a different posture into their first team: they are not timid, not intimidated by the codebase, not waiting for permission to propose edits. They have done this before. What many new hires spend months acquiring — the simple, load-bearing belief that they <em>belong</em> in the repository — arrives on day one. They recognize the rituals. They know what a staging environment is for. They have been told no on a pull request before and learned something from it. The result is an engineer who can <em>act</em>, not merely observe.
+            </p>
+
+            <p>
+              For institutions, this is also a recruitment and placement story. A graduate who arrives at a first job already fluent in pull requests, review culture, staged deployment, and rollback thinking is materially more employable than one who first meets these ideas on day one. The Software Practicum does not promise to replace the first job&rsquo;s onboarding — it promises that onboarding will look like <em>deepening</em> rather than <em>correcting</em>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IV — GUARDRAILS -->
+    <section class="section" id="guardrails">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">IV</span>
+            Section Four<br>
+            Guardrails
+          </div>
+          <div>
+            <h2>Six mechanisms that make the model <em>safer than it sounds</em>.</h2>
+            <p>
+              Taken individually, any one of these is ordinary software practice. Taken together, they are a defense-in-depth strategy: multiple, independent safeguards so that no single failure &mdash; student error, reviewer oversight, or tooling bug &mdash; can reach the systems administration and staff rely on.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Defense-in-depth</strong>
+            Multiple layers.<br>
+            Each fails safely.<br>
+            Each is borrowed<br>
+            from standard<br>
+            engineering practice.
+          </div>
+          <div class="section-content">
+            <div class="guardrails">
+              <div class="guardrail">
+                <div class="guardrail-num">G-01</div>
+                <svg class="guardrail-icon" viewBox="0 0 24 24" fill="none" stroke="#a32c1e" stroke-width="1.5">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+                <h3>Environment separation</h3>
+                <p>Student sandboxes are physically distinct from institutional systems, with their own database snapshots, synthetic test data, and no shared credentials.</p>
+              </div>
+
+              <div class="guardrail">
+                <div class="guardrail-num">G-02</div>
+                <svg class="guardrail-icon" viewBox="0 0 24 24" fill="none" stroke="#a32c1e" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>
+                </svg>
+                <h3>Professional review authority</h3>
+                <p>A staff engineer owns every decision to integrate, reshape, reject, or defer a student contribution. Their judgment is the final boundary before production.</p>
+              </div>
+
+              <div class="guardrail">
+                <div class="guardrail-num">G-03</div>
+                <svg class="guardrail-icon" viewBox="0 0 24 24" fill="none" stroke="#a32c1e" stroke-width="1.5">
+                  <path d="M4 20l4-4 4 2 4-6 4 4"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="16" r="1.5"/>
+                </svg>
+                <h3>Incremental trust</h3>
+                <p>Students do not begin on critical paths. Responsibility scales visibly and deliberately, matching the pattern any serious engineering team uses with new hires.</p>
+              </div>
+
+              <div class="guardrail">
+                <div class="guardrail-num">G-04</div>
+                <svg class="guardrail-icon" viewBox="0 0 24 24" fill="none" stroke="#a32c1e" stroke-width="1.5">
+                  <path d="M5 12a7 7 0 0 1 12-5M19 12a7 7 0 0 1-12 5"/><path d="M19 7v4h-4M5 17v-4h4"/>
+                </svg>
+                <h3>Version control &amp; rollback</h3>
+                <p>Software has a rare advantage: well-structured systems can return to a known-good state. Every change that lands is reversible with git-level precision.</p>
+              </div>
+
+              <div class="guardrail">
+                <div class="guardrail-num">G-05</div>
+                <svg class="guardrail-icon" viewBox="0 0 24 24" fill="none" stroke="#a32c1e" stroke-width="1.5">
+                  <path d="M4 6h16M4 12h16M4 18h10"/><circle cx="18" cy="18" r="2"/>
+                </svg>
+                <h3>Testing &amp; validation</h3>
+                <p>Student work faces the same expectations as professional work — automated tests, bug reproduction, peer review, and staged verification before anything advances.</p>
+              </div>
+
+              <div class="guardrail">
+                <div class="guardrail-num">G-06</div>
+                <svg class="guardrail-icon" viewBox="0 0 24 24" fill="none" stroke="#a32c1e" stroke-width="1.5">
+                  <rect x="4" y="8" width="16" height="12" rx="1"/><path d="M8 8V5a4 4 0 0 1 8 0v3"/>
+                </svg>
+                <h3>Meaningful boundaries</h3>
+                <p>Access is scoped: students are powerful contributors, never unsupervised operators. The structure itself, not individual diligence, is what keeps the institution safe.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- V — INCREMENTAL TRUST -->
+    <section class="section" id="trust">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">V</span>
+            Section Five<br>
+            Trust Ladder
+          </div>
+          <div>
+            <h2>Responsibility <em>earned</em>, not granted.</h2>
+            <p>
+              A student does not begin with sensitive work. They begin with the smallest possible contribution and accumulate scope only as their judgment, reliability, and review history make a stronger case for it. The ladder below sketches how that progression looks in practice.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Figure 02</strong>
+            The Trust Ladder<br>
+            <br>
+            Each rung requires<br>
+            staff endorsement<br>
+            and a review record.
+          </div>
+          <div class="section-content">
+            <div class="ladder">
+              <div class="ladder-title">
+                <span><span class="fig-label">Fig. 02</span> &middot; Incremental trust progression</span>
+                <span>Scope expands only after demonstrated judgment</span>
+              </div>
+
+              <div class="ladder-rungs">
+                <div class="rung" style="--fill: 0.25;">
+                  <div class="rung-label">Rung 01 · Onboarding</div>
+                  <h4>Observation &amp; documentation</h4>
+                  <p>Read the codebase. Write explanations. Fix typos, docs, and tests — work that cannot break the system but proves comprehension.</p>
+                </div>
+                <div class="rung" style="--fill: 0.5;">
+                  <div class="rung-label">Rung 02 · Contribution</div>
+                  <h4>Bounded bug fixes</h4>
+                  <p>Reproduce and fix real bugs in scoped modules. Every change reviewed, tested, and merged through the gate.</p>
+                </div>
+                <div class="rung" style="--fill: 0.75;">
+                  <div class="rung-label">Rung 03 · Ownership</div>
+                  <h4>Feature work &amp; tooling</h4>
+                  <p>Lead small features or internal tooling improvements. Still gated, but with growing autonomy in design choices.</p>
+                </div>
+                <div class="rung" style="--fill: 1;">
+                  <div class="rung-label">Rung 04 · Mentorship</div>
+                  <h4>Reviewing junior work</h4>
+                  <p>Advanced students begin reviewing newer students&rsquo; work — the final test of whether their judgment is teachable.</p>
+                </div>
+              </div>
+            </div>
+
+            <p style="margin-top: 22px;">
+              The ladder is deliberately conservative. No student operates at a rung their staff mentor has not explicitly endorsed, and movement between rungs is a decision made on evidence — merged contributions, review quality, demonstrated understanding — rather than time spent.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VI — PILOT -->
+    <section class="section" id="pilot">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">VI</span>
+            Section Six<br>
+            Pilot
+          </div>
+          <div>
+            <h2>A <em>focused pilot</em>, not a full overhaul.</h2>
+            <p>
+              The most realistic way to explore this model is through a small, time-boxed pilot positioned alongside existing coursework &mdash; not as a replacement for it. The pilot should be deliberately modest in scope and deliberately honest in measurement.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Scope</strong>
+            One semester<br>
+            One cohort<br>
+            One platform<br>
+            One honest<br>
+            measurement
+          </div>
+          <div class="section-content">
+            <div class="pilot-grid">
+              <div class="pilot-step">
+                <div class="pilot-step-num">i</div>
+                <h3>Small cohort</h3>
+                <p>Begin with a limited group of motivated students able to work in a structured environment.</p>
+              </div>
+              <div class="pilot-step">
+                <div class="pilot-step-num">ii</div>
+                <h3>Single platform</h3>
+                <p>One evolving internal application becomes the core system students explore and improve.</p>
+              </div>
+              <div class="pilot-step">
+                <div class="pilot-step-num">iii</div>
+                <h3>Dual-mode term</h3>
+                <p>Phase I: manual engineering. Phase II: AI-assisted. Same codebase. Honest comparison.</p>
+              </div>
+              <div class="pilot-step">
+                <div class="pilot-step-num">iv</div>
+                <h3>Measured outcomes</h3>
+                <p>Evaluate debugging ability, systems thinking, review quality, and portfolio artifacts.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VII — DISCUSSION -->
+    <section class="section" id="discussion">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-marker">
+            <span class="num">VII</span>
+            Section Seven<br>
+            Open Questions
+          </div>
+          <div>
+            <h2>Questions worth <em>exploring together</em>.</h2>
+            <p>
+              These are the conversations the pilot will rise or fall on. They are intentionally framed as institutional and operational questions, because the pedagogical case has already been made &mdash; what remains is designing a realistic first implementation.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="margin-note">
+            <strong>Invitation</strong>
+            For discussion<br>
+            with faculty,<br>
+            IT, and<br>
+            administration
+          </div>
+          <div class="section-content">
+            <div class="discussion">
+              <div class="discussion-block">
+                <h3>Institutional Fit</h3>
+                <ol>
+                  <li>Where could a pilot like this live inside an existing program?</li>
+                  <li>Should it be framed as a lab, elective, capstone, or special initiative?</li>
+                  <li>What internal goals would this support most directly — student outcomes, AI literacy, or workforce readiness?</li>
+                  <li>Which existing internal platform is best suited to be the Software Practicum's first host system?</li>
+                </ol>
+              </div>
+              <div class="discussion-block">
+                <h3>Operational Considerations</h3>
+                <ol>
+                  <li>What oversight model is required from IT and faculty during Phase I?</li>
+                  <li>Who are the staff engineers who would own the review gate, and what is their time commitment?</li>
+                  <li>What is the cleanest path to recruit and select a small initial cohort?</li>
+                  <li>How should success be measured in a way that is honest about both outcomes and limits?</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- COLOPHON -->
+  <footer class="colophon">
+    <div class="container">
+      <div class="colophon-grid">
+        <div>
+          <h2>Education should not simulate reality when it can <em>responsibly expose</em> students to it<span class="end-mark"></span></h2>
+          <p>
+            The Software Practicum is an argument about what a software engineering education is for. It holds that the purpose of such a program is not to produce students who can complete assignments, but to produce engineers who can stand inside a real system, reason about it, change it safely, and improve it.
+          </p>
+          <p>
+            Everything in this document is designed to make that possible without ever putting the systems administration and staff depend on at unacceptable risk.
+          </p>
+        </div>
+
+        <div class="colophon-meta">
+          <strong>Colophon</strong>
+          <dl>
+            <dt>Title</dt><dd>The Software Practicum Review, Vol. I</dd>
+            <dt>Subject</dt><dd>Software engineering pedagogy</dd>
+            <dt>Framing</dt><dd>Draft proposal for discussion</dd>
+            <dt>Prepared</dt><dd>Spring 2026</dd>
+            <dt>Typeset in</dt><dd>Fraunces · Source Serif 4 · JetBrains Mono</dd>
+            <dt>Colour</dt><dd>Oxblood #a32c1e on Warm Paper</dd>
+            <dt>For</dt><dd>Institutional review &amp; pilot design</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
